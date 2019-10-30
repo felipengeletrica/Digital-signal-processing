@@ -37,10 +37,12 @@ from scipy.fftpack import fft, fftfreq
 import matplotlib.pyplot as plt
 
 
-
 def main():
 
-    wav_filename = "file_example_WAV_1MG.wav"
+    path = 'audio/'
+
+    #wav_filename = path + 'file_example_WAV_1MG.wav'
+    wav_filename = path + "wavTones_60Hz_-6dBFS_7000Hz_-18dBFS_3s.wav"
     samplerate, data = wavfile.read(wav_filename)
 
     total_samples = len(data)
@@ -56,7 +58,6 @@ def main():
     plt.xlabel('frequency in Hz')
     plt.ylabel('amplitude')
     plt.show()
-
 
 
 if __name__ == '__main__':
