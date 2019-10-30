@@ -28,18 +28,35 @@
 # of the authors and should not be interpreted as representing official policies,
 # either expressed or implied, of the FreeBSD Project.
 
-from math import *
+import matplotlib.pyplot as plt
+from scipy.fftpack import fft
+from scipy.io import wavfile  # get the api
+
+from scipy.io import wavfile
+from scipy.fftpack import fft, fftfreq
+import matplotlib.pyplot as plt
+
 
 
 def main():
 
-    for wn in range(1, 6):
+    wav_filename = "file_example_WAV_1MG.wav"
+    samplerate, data = wavfile.read(wav_filename)
 
-        if wn != 3:
-            res = (sin(((2*pi*(8000/44100))*pi) * (wn - 3)))/((wn - 3)*pi)
-            print(res)
-        else:
-            print(0)
+    total_samples = len(data)
+    limit = int((total_samples / 2) - 1)
+
+    fft_abs = abs(fft(data))
+
+    freqs = fftfreq(total_samples, 1 / samplerate)
+
+    # plot the frequencies
+    plt.plot(freqs[:limit], fft_abs[:limit])
+    plt.title("Frequency spectrum of %s" % wav_filename)
+    plt.xlabel('frequency in Hz')
+    plt.ylabel('amplitude')
+    plt.show()
+
 
 
 if __name__ == '__main__':
