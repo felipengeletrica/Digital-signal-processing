@@ -5,8 +5,8 @@ from pylab import *
 
 
 def f(filename):
-    fs, data_1 = wavfile.read('audio2/audio_original.wav')  # load the data
-    fs, data_2 = wavfile.read('audio2/grupo02.wav') # load the data
+    #fs, data_1 = wavfile.read('audio2/audio_original.wav')  # load the data
+    fs, data_2 = wavfile.read('output.wav') # load the data
     #
     # a = data_1 # this is a two channel soundtrack, I get the first track
     # b=[(ele/2**16)*2-1 for ele in a] # this is 8-bit track, b is now normalized on [-1,1)
