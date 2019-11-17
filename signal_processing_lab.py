@@ -8,6 +8,7 @@ class Process(Enum):
     DSP_PLOT_TIME_DOMAIN = 2
     DSP_PLOT_FREQUENCY_DOMAIN = 3
     DSP_FILTER = 4
+    DSP_ROOT_MEAN_SQUARE_ERROR = 5
 
 
 def banner():
@@ -49,9 +50,12 @@ def show_filter_type() -> filter_type:
     return filter_type(int(option))
 
 
-def file():
+def file(message=None):
 
-    print("Enter file name:")
+    if message is None:
+        print("Enter file name:")
+    else:
+        print(message)
     option = input()
     return option
 
@@ -114,7 +118,18 @@ def main():
                     dsp.time_domain(filtred_audio)
                     dsp.frequency_domain(filtred_audio)
 
+            #Calculate Root mean square
+            elif opt is Process.DSP_ROOT_MEAN_SQUARE_ERROR:
 
+                file_original = file("Filename original:")
+                file_filtred = file("Filename filtred:")
+
+                audio_samples_original, sample_rate, duration = dsp.open(filename=file_original)
+                audio_samples_filtred, sample_rate, duration = dsp.open(filename=file_filtred)
+
+                error = dsp.root_square_mean_error(audio_samples_original, audio_samples_filtred)
+                print(f'Error: {error}')
+                print(f'Percentage: {error * 100}%')
 
         except Exception as e:
             raise e

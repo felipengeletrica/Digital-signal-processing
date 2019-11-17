@@ -45,6 +45,12 @@ class functions_and_filters(object):
 
         return indices
 
+    def change_volume(self, audio_samples, level):
+
+        new_audio_samples = audio_samples - 20
+
+        return new_audio_samples
+
     def extractFrequency(self, indices, freq_threshold=2, number_samples=0, sample_rate=0):
 
         extracted_freqs = []
@@ -73,10 +79,10 @@ class functions_and_filters(object):
         f0 = 500.0  # Frequency to be removed from signal
         fs = 44100  # Sample frequency (Hz)
         w = f0 / (fs / 2)
-        q = 1  # Quality Factor
-        # b, a = signal.iirnotch(w, q)
-        b = [0.9993962108935, -1.993722787953, 0.9993962108935]
-        a = [1, -1.993722787953, 0.998792421787]
+        q = 50  # Quality Factor
+        b, a = signal.iirnotch(w, q)
+        # b = [0.9993962108935, -1.993722787953, 0.9993962108935]
+        # a = [1, -1.993722787953, 0.998792421787]
 
         y = signal.lfilter(b, a, audio_samples)
         return y
@@ -97,3 +103,32 @@ class functions_and_filters(object):
         b, a = signal.butter(10, w, 'low')
         y = signal.filtfilt(b, a, audio_samples)
         return y
+
+    def root_mean_square_error(self, original_data, filtred_data):
+
+        if len(original_data) != len(filtred_data):
+            raise (IOError('The two dice are not the same size.'))
+        mse = self.square_mean_error(original_data, filtred_data)
+
+        smse = np.sqrt(mse)
+        return smse
+
+    @staticmethod
+    def square_mean_error(original_data, filtred_data):
+
+        if len(original_data) != len(filtred_data):
+            raise (IOError('The two dice are not the same size.'))
+        sum = 0
+        n = len(original_data)
+        diferrence = 0.0000000000
+
+        for i in range(0, n):
+
+            diferrence = original_data[i] - filtred_data[i]
+            square_difference = diferrence ** 2
+            sum = sum + square_difference
+
+        mse = sum / n
+        return mse
+
+

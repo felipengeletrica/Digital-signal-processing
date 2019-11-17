@@ -34,6 +34,7 @@ class dsp_lab(object):
         self.audio_number_samples = None
         self.audio_samples_rate = None
         self.audio_duration = 0
+        self.audio_samples_chunk = 65535
 
         # Create instance for filter
         self.filters = functions_and_filters()
@@ -81,7 +82,7 @@ class dsp_lab(object):
             raise e
             return False
 
-    def time_domain(self, audio_samples):
+    def time_domain(self, audio_samples, title='Spectrogram of wav audio'):
         """
         Plot time domain samples
         """
@@ -91,7 +92,7 @@ class dsp_lab(object):
                 raise (IOError('No samples for save'))
 
             plt.subplot(211)
-            plt.title('Spectrogram of wav audio')
+            plt.title(title)
             plt.plot(audio_samples)
             plt.xlabel('Sample')
             plt.ylabel('Amplitude')
@@ -101,20 +102,21 @@ class dsp_lab(object):
             plt.ylabel('Frequency')
             plt.grid()
             plt.show()
+            plt.savefig('time_domain.png')
             return True
 
         except Exception as e:
             raise e
             return False
 
-    def frequency_domain(self, audio_samples):
+    def frequency_domain(self, audio_samples, title='Fast Fourier Transform'):
         """
         Process FFT
         """
         try:
 
             if len(audio_samples) == 0:
-                raise (IOError('No samples for pprocessing'))
+                raise (IOError('No samples for processing'))
 
             # FFT calculation
             fft_data = scipy.fft(audio_samples)
@@ -142,10 +144,12 @@ class dsp_lab(object):
 
             pylab.plot(x_asis_data, y_asis_data, color='blue')  # plotting the spectrum
 
+            pylab.title(title)
             pylab.xlabel('Freq (Hz)')
             pylab.ylabel('|Magnitude - Voltage  Gain / Loss|')
             pylab.grid()
             pylab.show()
+            pylab.savefig('frequency_domain.png')
 
         except Exception as e:
             raise e
@@ -158,16 +162,44 @@ class dsp_lab(object):
         """
         try:
 
+            filtred_data = []
+
+            #self.audio_samples = self.audio_samples - 1000
+
             if type is filter_type.DSP_LAB_FILTER_NOTCH:
                 print("Selected filter NOTCH")
-                return self.filters.notchFilter(self.audio_samples)
+                filtred_data = self.filters.notchFilter(self.audio_samples)
 
             elif type is filter_type.DSP_LAB_FILTER_BUTTERWORTH:
                 print("Selected filter Butterworth")
-                return self.filters.butter_bandstop_filter(self.audio_samples, self.audio_samples_rate)
+                filtred_data = self.filters.butter_bandstop_filter(self.audio_samples, self.audio_samples_rate)
 
             else:
                 print('Unknown filter')
-                return None
+                filtred_data = None
+
+            # add normalize audio (remove saturations)
+            #peak = self.filters.findPeak(filtred_data)
+            #print(peak)
+
+            filtred_data = self.filters.change_volume(filtred_data, 3)
+
+        except Exception as e:
+            filtred_data = None
+            raise e
+
+        finally:
+            return filtred_data
+
+    def root_square_mean_error(self, original_data, filtred_data):
+
+        rmse = 0.00
+        try:
+            rmse = self.filters.root_mean_square_error(original_data, filtred_data)
+
+            normalized_chunk = rmse / self.audio_samples_chunk
+
         except Exception as e:
             raise e
+
+        return normalized_chunk
