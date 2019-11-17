@@ -161,9 +161,7 @@ class dsp_lab(object):
         :return:
         """
         try:
-
             filtred_data = []
-
             #self.audio_samples = self.audio_samples - 1000
 
             if type is filter_type.DSP_LAB_FILTER_NOTCH:
@@ -192,7 +190,12 @@ class dsp_lab(object):
             return filtred_data
 
     def root_square_mean_error(self, original_data, filtred_data):
-
+        """
+         Calculate Root Square Mean Error
+        :param original_data:
+        :param filtred_data:
+        :return:
+        """
         rmse = 0.00
         try:
             rmse = self.filters.root_mean_square_error(original_data, filtred_data)

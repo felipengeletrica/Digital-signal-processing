@@ -17,6 +17,12 @@ class functions_and_filters(object):
         pass
 
     def findPeak(self, magnitude_values, noise_level=2000):
+        """
+        Find Signal Peak
+        :param magnitude_values:
+        :param noise_level:
+        :return:
+        """
         splitter = 0
         # zero out low values in the magnitude array to remove noise (if any)
         magnitude_values = np.asarray(magnitude_values)
@@ -46,13 +52,25 @@ class functions_and_filters(object):
         return indices
 
     def change_volume(self, audio_samples, level):
-
+        """
+        Change audio volume
+        :param audio_samples:
+        :param level:
+        :return:
+        """
         new_audio_samples = audio_samples - 20
 
         return new_audio_samples
 
     def extractFrequency(self, indices, freq_threshold=2, number_samples=0, sample_rate=0):
+        """
 
+        :param indices:
+        :param freq_threshold:
+        :param number_samples:
+        :param sample_rate:
+        :return:
+        """
         extracted_freqs = []
 
         freq_bins = arange(number_samples) * sample_rate / number_samples
@@ -76,6 +94,11 @@ class functions_and_filters(object):
         return extracted_freqs
 
     def notchFilter(self, audio_samples):
+        """
+        Notch filter
+        :param audio_samples:
+        :return:
+        """
         f0 = 500.0  # Frequency to be removed from signal
         fs = 44100  # Sample frequency (Hz)
         w = f0 / (fs / 2)
@@ -88,7 +111,12 @@ class functions_and_filters(object):
         return y
 
     def butter_bandstop_filter(self, audio_samples, audio_samples_rate):
-
+        """
+        Butterworth Band Stop filter
+        :param audio_samples:
+        :param audio_samples_rate:
+        :return:
+        """
         nyq = (audio_samples_rate / 2)
         low = 490 / nyq
         high = 510 / nyq
@@ -98,14 +126,24 @@ class functions_and_filters(object):
         return y
 
     def lowPassFilter(self, audio_samples, audio_samples_rate):
-
+        """
+        Low Filter Butterworth
+        :param audio_samples:
+        :param audio_samples_rate:
+        :return:
+        """
         w = 450 / (audio_samples_rate / 2)
         b, a = signal.butter(10, w, 'low')
         y = signal.filtfilt(b, a, audio_samples)
         return y
 
     def root_mean_square_error(self, original_data, filtred_data):
-
+        """
+        Root Mean Square Filter
+        :param original_data:
+        :param filtred_data:
+        :return:
+        """
         if len(original_data) != len(filtred_data):
             raise (IOError('The two dice are not the same size.'))
         mse = self.square_mean_error(original_data, filtred_data)
@@ -115,7 +153,12 @@ class functions_and_filters(object):
 
     @staticmethod
     def square_mean_error(original_data, filtred_data):
-
+        """
+        Square Mean Error
+        :param original_data:
+        :param filtred_data:
+        :return:
+        """
         if len(original_data) != len(filtred_data):
             raise (IOError('The two dice are not the same size.'))
         sum = 0
@@ -130,5 +173,3 @@ class functions_and_filters(object):
 
         mse = sum / n
         return mse
-
-

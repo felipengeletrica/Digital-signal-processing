@@ -12,6 +12,9 @@ class Process(Enum):
 
 
 def banner():
+    """
+    Banner initial
+    """
     print("-----------------------------------------")
     print("Welcome Digital Signal Processing Lab")
     print("Universidade Luterana do Brasil  2019/2")
@@ -24,7 +27,10 @@ def banner():
 
 
 def show_process_menu() -> Process:
-
+    """
+    Show main menu
+    :return:
+    """
     print('\n\r')
     for op in Process:
         print(f'{op.value} - {op.name}.')
@@ -38,7 +44,10 @@ def show_process_menu() -> Process:
 
 
 def show_filter_type() -> filter_type:
-
+    """
+    Menu filter type
+    :return:
+    """
     print('\n\r')
     for op in filter_type:
         print(f'{op.value} - {op.name}.')
@@ -51,7 +60,11 @@ def show_filter_type() -> filter_type:
 
 
 def file(message=None):
-
+    """
+    Menu Open File
+    :param message:
+    :return:
+    """
     if message is None:
         print("Enter file name:")
     else:
@@ -61,7 +74,9 @@ def file(message=None):
 
 
 def main():
-
+    """
+    Main Signal Processing Lab.
+    """
     # Create instance for dsp lab
     dsp = dsp_lab()
 
