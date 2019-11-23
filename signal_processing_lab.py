@@ -127,11 +127,13 @@ def main():
 
                 filtred_audio = dsp.filter(option)
                 print('Save file')
-                if len(filtred_audio):
+                if filtred_audio is not None and len(filtred_audio):
                     filename = input('Filename:')
                     dsp.save(filename=filename, audio_samples=filtred_audio)
                     dsp.time_domain(filtred_audio)
                     dsp.frequency_domain(filtred_audio)
+                else:
+                    print("Error um process filter")
 
             #Calculate Root mean square
             elif opt is Process.DSP_ROOT_MEAN_SQUARE_ERROR:
