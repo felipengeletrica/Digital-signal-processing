@@ -104,10 +104,27 @@ class functions_and_filters(object):
         w = f0 / (fs / 2)
         q = 50  # Quality Factor
         b, a = signal.iirnotch(w, q)
-        # b = [0.9993962108935, -1.993722787953, 0.9993962108935]
-        # a = [1, -1.993722787953, 0.998792421787]
 
         y = signal.lfilter(b, a, audio_samples)
+
+         # Frequency response
+        freq, h = signal.freqz(b, a, fs=fs)
+         # Plot
+        fig, ax = plt.subplots(2, 1, figsize=(8, 6))
+        ax[0].plot(freq, 20 * np.log10(abs(h)), color='blue')
+        ax[0].set_title("Frequency Response")
+        ax[0].set_ylabel("Amplitude (dB)", color='blue')
+        ax[0].set_xlim([0, fs/2])
+        ax[0].set_ylim([-5, 5])
+        ax[0].grid()
+        ax[1].plot(freq, np.unwrap(np.angle(h)) * 180 / np.pi, color='green')
+        ax[1].set_ylabel("Angle (degrees)", color='green')
+        ax[1].set_xlabel("Frequency (Hz)")
+        ax[1].set_xlim([0, fs/2])
+        ax[1].set_yticks([-90, -60, -30, 0, 30, 60, 90])
+        ax[1].set_ylim([-90, 90])
+        ax[1].grid()
+        plt.show()
         return y
 
     def butter_bandstop_filter(self, audio_samples, audio_samples_rate):
