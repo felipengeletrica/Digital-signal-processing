@@ -1,4 +1,8 @@
+import struct
 from enum import Enum
+
+from sympy.core.tests.test_sympify import numpy
+
 from functions_and_filters import *
 
 
@@ -21,6 +25,9 @@ class dsp_lab(object):
         self.audio_samples_rate = None
         self.audio_duration = 0
         self.audio_samples_chunk = 65535
+
+        #filter parameter
+        self.fs = 500
 
         # Create instance for filter
         self.filters = functions_and_filters()
@@ -121,7 +128,7 @@ class dsp_lab(object):
             frequencies = self.filters.extractFrequency(
                 indices=indices,
                 number_samples=self.audio_number_samples,
-                sample_rate= self.audio_samples_rate)
+                sample_rate=self.audio_samples_rate)
 
             print("frequencies:", frequencies)
 
@@ -148,25 +155,41 @@ class dsp_lab(object):
         """
         try:
             filtred_data = []
-            #self.audio_samples = self.audio_samples - 1000
+
+            #Attenuation
+            data_atennuantion = self.audio_samples / 40
+
 
             if type is filter_type.DSP_LAB_FILTER_NOTCH:
                 print("Selected filter NOTCH")
-                filtred_data = self.filters.notchFilter(self.audio_samples)
+                filtred_data = self.filters.notchFilter(data_atennuantion)
 
             elif type is filter_type.DSP_LAB_FILTER_BUTTERWORTH:
                 print("Selected filter Butterworth")
-                filtred_data = self.filters.butter_bandstop_filter(self.audio_samples, self.audio_samples_rate)
+                filtred_data = self.filters.butter_bandstop_filter(data_atennuantion, self.audio_samples_rate)
 
             else:
                 print('Unknown filter')
                 filtred_data = None
 
-            # add normalize audio (remove saturations)
-            #peak = self.filters.findPeak(filtred_data)
-            #print(peak)
+            #Calculate original and add new gain
+            media = 0
+            for data in self.audio_samples:
+                media += data
 
-            filtred_data = self.filters.change_volume(filtred_data, 3)
+            media = (media/self.audio_number_samples)
+
+            media_filter = 0
+            for data in filtred_data:
+                media_filter += data
+
+            media_filter = (media_filter / self.audio_number_samples)
+
+            # Calculates audio meas
+            gain = (media/media_filter) / 2
+
+            #add new gain audio
+            filtred_data = filtred_data * gain
 
         except Exception as e:
             filtred_data = None
