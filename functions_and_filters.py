@@ -102,7 +102,8 @@ class functions_and_filters(object):
         f0 = 500.0  # Frequency to be removed from signal
         fs = 44100  # Sample frequency (Hz)
         w = f0 / (fs / 2)
-        q = 50  # Quality Factor
+        q = 5
+        # Quality Factor
         b, a = signal.iirnotch(w, q)
 
         y = signal.lfilter(b, a, audio_samples)
@@ -111,11 +112,19 @@ class functions_and_filters(object):
         freq, h = signal.freqz(b, a, fs=fs)
          # Plot
         fig, ax = plt.subplots(2, 1, figsize=(8, 6))
+
+        # x coordinates for the lines
+        xcoords = [f0]
+        # colors for the lines
+        colors = ['r']
+        for xc, c in zip(xcoords, colors):
+            ax[0].axvline(x=xc, label='line at x = {}'.format(xc), c=c)
+
         ax[0].plot(freq, 20 * np.log10(abs(h)), color='blue')
         ax[0].set_title("Frequency Response")
         ax[0].set_ylabel("Amplitude (dB)", color='blue')
         ax[0].set_xlim([0, fs/2])
-        ax[0].set_ylim([-5, 5])
+        ax[0].set_ylim([-40, 40])
         ax[0].grid()
         ax[1].plot(freq, np.unwrap(np.angle(h)) * 180 / np.pi, color='green')
         ax[1].set_ylabel("Angle (degrees)", color='green')
@@ -135,8 +144,8 @@ class functions_and_filters(object):
         :return:
         """
         nyq = (audio_samples_rate / 2)
-        low = 490 / nyq
-        high = 510 / nyq
+        low = 450 / nyq
+        high = 550 / nyq
         order = 3
         i, u = signal.butter(order, [low, high], btype='bandstop')
         y = lfilter(i, u, audio_samples)
