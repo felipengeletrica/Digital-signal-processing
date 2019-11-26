@@ -1,11 +1,6 @@
-from numpy import array, diff, where, split
+from numpy import diff, where, split
 from scipy import arange
-import soundfile
 import numpy as np
-import scipy
-import pylab
-import copy
-import matplotlib
 import matplotlib.pyplot as plt
 from scipy import signal
 from scipy.signal import lfilter
@@ -95,20 +90,19 @@ class functions_and_filters(object):
 
     def notchFilter(self, audio_samples):
         """
-        Notch filter
+        Design a Notch filter and convolute with a given original signal
         :param audio_samples:
         :return:
         """
         f0 = 500.0  # Frequency to be removed from signal
         fs = 44100  # Sample frequency (Hz)
-        w = f0 / (fs / 2)
-        q = 5
-        # Quality Factor
-        b, a = signal.iirnotch(w, q)
+        w = f0 / (fs / 2) # Digital normalized frequency
+        q = 5 # Quality Factor
+        b, a = signal.iirnotch(w, q) # Design filter
 
-        y = signal.lfilter(b, a, audio_samples)
+        y = signal.lfilter(b, a, audio_samples) # Apply filter
 
-         # Frequency response
+         # Frequency response of filtered signal
         freq, h = signal.freqz(b, a, fs=fs)
          # Plot
         fig, ax = plt.subplots(2, 1, figsize=(8, 6))
@@ -138,7 +132,7 @@ class functions_and_filters(object):
 
     def butter_bandstop_filter(self, audio_samples, audio_samples_rate):
         """
-        Butterworth Band Stop filter
+        Design a Butterworth Band Stop filter and convolute it with an original signal
         :param audio_samples:
         :param audio_samples_rate:
         :return:
@@ -198,7 +192,7 @@ class functions_and_filters(object):
 
     def root_mean_square_error(self, original_data, filtred_data):
         """
-        Root Mean Square Filter
+        Calculates a Root Mean Square Error given two signals
         :param original_data:
         :param filtred_data:
         :return:
@@ -207,28 +201,25 @@ class functions_and_filters(object):
             raise (IOError('The two dice are not the same size.'))
         mse = self.square_mean_error(original_data, filtred_data)
 
-        smse = np.sqrt(mse)
-        return smse
+        rmse = np.sqrt(mse)
+        return rmse
 
     @staticmethod
     def square_mean_error(original_data, filtred_data):
         """
-        Square Mean Error
+        Calculates a Square Mean Error given two signals
         :param original_data:
         :param filtred_data:
         :return:
         """
         if len(original_data) != len(filtred_data):
-            raise (IOError('The two dice are not the same size.'))
-        sum = 0
+            raise (IOError('The two slice are not the same size.'))
+
+        sum = 0.0
         n = len(original_data)
-        diferrence = 0.0000000000
 
         for i in range(0, n):
-
-            diferrence = original_data[i] - filtred_data[i]
-            square_difference = diferrence ** 2
-            sum = sum + square_difference
+            sum = sum + ((original_data[i] - filtred_data[i])**2)
 
         mse = sum / n
         return mse

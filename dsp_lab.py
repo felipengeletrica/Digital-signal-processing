@@ -1,7 +1,4 @@
-import struct
 from enum import Enum
-
-from sympy.core.tests.test_sympify import numpy
 
 from functions_and_filters import *
 
