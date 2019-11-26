@@ -1,6 +1,11 @@
 from numpy import diff, where, split
 from scipy import arange
 import numpy as np
+import soundfile
+import scipy
+import pylab
+import copy
+import matplotlib
 import matplotlib.pyplot as plt
 from scipy import signal
 from scipy.signal import lfilter
