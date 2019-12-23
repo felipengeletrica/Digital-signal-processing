@@ -1,7 +1,7 @@
 ## Digital Signal Processing - IIR filter to remove interfering signal
 This App was designed to remove interfering 500Hz signal (tone) in a given audio file.
 
-## #Requirements:
+### Requirements:
 •	Python 3.7
 
 •	Numpy
